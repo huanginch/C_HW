@@ -29,10 +29,10 @@ int main(void){
 
 	//init the inputSTR and article
 	for(i = 0; i < STRLEN; i++){
-		inputSTR[i] = '\0';
+		inputSTR[i - 1] = '\0';
 	}
 	for(i = 0; i < ARTLEN; i++){
-		article[ARTLEN] ='\0';
+		article[ARTLEN - 1] ='\0';
 	}
 
 	//read the inputSTR
@@ -100,7 +100,7 @@ int main(void){
 				strcpy(wordarr, word);
 
 				//handle the replace
-				if( body = strstr(wordarr, pattern) ){
+				if( (body = strstr(wordarr, pattern)) != 0 ){
 					for(i = 0; i < strlen(wordarr); i++){
 						if(&wordarr[i] == body)
 							break;
@@ -143,7 +143,7 @@ int main(void){
 				strcpy(wordarr, word);
 
 				/*handle the replace*/
-				if( body = strstr(wordarr, pattern) ){
+				if( (body = strstr(wordarr, lower_pattern)) != 0 ){
 					for(i = 0; i < strlen(wordarr); i++){
 						if(&wordarr[i] == body)
 							break;
