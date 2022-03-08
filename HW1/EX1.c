@@ -130,44 +130,51 @@ int main(void){
 		}
 		else if(!(strncmp(parameter, "-i", 3))){
 			//if the parameter is -i
-
+			
+			//change pattern to lower case
 			char *lower_pattern = toLowercase(pattern);
-			strcpy(article, toLowercase(article));
+			//printf("lower_pattern: %s\n", lower_pattern);
 
 			word = strtok(article, da);
 
 			while(word != NULL){
 				
-				//put the sliced word into an array
-				char wordarr[strlen(word)];
-				strcpy(wordarr, word);
+				//put the sliced word into an array and it is the origin version
+				char o_word[strlen(word)];
+				strcpy(o_word, word);
+
+				//change the word to lower case and save a lower case array version 
+				toLowercase(word);
+				char lower_word[strlen(word)];
+				strcpy(lower_word, word);
 
 				/*handle the replace*/
-				if( (body = strstr(wordarr, lower_pattern)) != 0 ){
-					for(i = 0; i < strlen(wordarr); i++){
-						if(&wordarr[i] == body)
+				if( (body = strstr(lower_word, lower_pattern)) != 0 ){
+					for(i = 0; i < strlen(word); i++){
+						if(&lower_word[i] == body)
 							break;
 					}
 
-					//print the word after replaced
+					//print the word after replaced(origin version)
 					for(j = 0; j < i; j++){
-						printf("%c",wordarr[j]);
+						printf("%c",o_word[j]);
 					}
 					printf("%s", replacement);
-					for(j = i+strlen(pattern); j < strlen(wordarr); j++){
-						printf("%c",wordarr[j]);
+					for(j = i+strlen(lower_pattern); j < strlen(word); j++){
+						printf("%c",o_word[j]);
 					}
 					printf("\n");
 
 
 				}
 				word = strtok(NULL, da);
+				//printf("next word: %s\n", word);
 			}
 
 		}
 		else{
 			//if invalid input parameter
-			printf("The input format : string1 string2 [parameter]\n");
+			printf("The input format: string1 string2 [parameter]\n");
 			break;
 		}
 		
