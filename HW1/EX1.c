@@ -12,30 +12,14 @@
 	c = c -'A' + 'a';
 */
 
-/*char *strslice(char article[], char *stop){
-	char word[];
-	int i;
-	my slice string func to fit the question
-	
-	for(i = 0; i < ARTLEN; i++){
-		if(&article[i] == stop){
-			break;
-		}
-	}
-	
-	for(i ; i < ARTLEN; i++){
-		if(isalnum(article[i]) || article[i] == '-'){
-			strcpy(word[i], article[i]);
-		}
-		else{
-			break;
-		}
-	}
-	stop = &article[i+1];
-	word[i] = '\0'
+char *toLowercase(char str[]){
 
-	return word;
-}*/
+	int i;
+	for(i = 0; i < strlen(str); i++){
+		str[i] = tolower(str[i]);
+	}
+	return str;
+}
 
 int main(void){
 	int i, j;// use for loop
@@ -43,7 +27,7 @@ int main(void){
 	char *pattern, *replacement; // the pattern and replacement
 	char *parameter = NULL; // the parameter and it's default is "\0"
 
-	/*init the inputSTR and article*/
+	//init the inputSTR and article
 	for(i = 0; i < STRLEN; i++){
 		inputSTR[i] = '\0';
 	}
@@ -51,7 +35,7 @@ int main(void){
 		article[ARTLEN] ='\0';
 	}
 
-	/*read the inputSTR*/
+	//read the inputSTR
 	fprintf(stderr, "Enter pattern, replacement, and at most one parameter:\n");
 	fgets(inputSTR, STRLEN, stdin);
 	inputSTR[STRLEN - 1] = '\0';
@@ -63,13 +47,14 @@ int main(void){
 	pattern = strtok(inputSTR, ds);
 	replacement = strtok(NULL, ds);
 	parameter = strtok(NULL, ds);
-	
+
+	//read the article
 	while( fgets(article, ARTLEN, stdin) != NULL ){
 		
-		article[ARTLEN - 1] = '\0';
+		article[ARTLEN - 1] = '\0';//put \0 to the end of the article
 
-		
-		int count = 0; //count for the size f da
+		//count for the size of dilem to split the article
+		int count = 0;
 		
 		for(i = 0; i < ARTLEN; i++){
 			if(!(isalnum(article[i]) || article[i] == '-')){
@@ -77,18 +62,19 @@ int main(void){
 			}
 		}
 
-		char tmp_da[count];//the delim for the article
+		char tmp_da[count];//the temp delim array for the article
 		char *word; //the word in the article
 		char *body; // the pattern should be replace
-		char *stop = article;
-
+		
+		//find the char which is not alphabet, number and dash. And then put them into tmp_da
 		for(i = 0; i < ARTLEN; i++){
 			if(!(isalnum(article[i]) || article[i] == '-')){
 				for(j = 0; j < count; j++){
-					if(tmp_da[j] ==  article[i]){
+					if(tmp_da[j] ==  article[i]){ //if the char is already put in the tmp_da, skip it.
 						break;
 					}
-					if(j == strlen(tmp_da)){
+					if(j == strlen(tmp_da)){ 
+						//if all the elements of tmp_da is not as same as the char, put it into tmp_da
 						tmp_da[j] = article[i];
 						break;
 					}
@@ -96,18 +82,15 @@ int main(void){
 			}
 		}
 
+		//strtok ask for const char
 		const char *da;
 		da = tmp_da;
 
 		/*handle the article*/
 		if(parameter == NULL){
-			
-			//printf("the parameter is null\n");
 			//if no input parameter
 			
-
 			//slice the article
-
 			word = strtok(article, da);
 
 			while(word != NULL){
@@ -123,12 +106,14 @@ int main(void){
 							break;
 					}
 
-					//print the word after replaced
+					//print the word should be replaced
 					for(j = 0; j < i; j++){
+						//the characters before pattern in the word
 						printf("%c",wordarr[j]);
 					}
 					printf("%s", replacement);
 					for(j = i+strlen(pattern); j < strlen(wordarr); j++){
+						//the characters after the pattern in the word
 						printf("%c",wordarr[j]);
 					}
 					printf("\n");
@@ -144,11 +129,12 @@ int main(void){
 
 		}
 		else if(!(strncmp(parameter, "-i", 3))){
-			printf("the parameter is -i\n");
 			//if the parameter is -i
-			/*pattern and article should be change to lower case to compare*/
 
+			char *lower_pattern = toLowercase(pattern);
+			strcpy(article, toLowercase(article));
 
+			word = strtok(article, da);
 
 			while(word != NULL){
 				
@@ -182,6 +168,7 @@ int main(void){
 		else{
 			//if invalid input parameter
 			printf("The input format : string1 string2 [parameter]\n");
+			break;
 		}
 		
 	}
