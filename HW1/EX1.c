@@ -6,61 +6,28 @@
 #define STRLEN 100 //the length of input string
 #define ARTLEN 4095 //the length of input article 
 
-//make string to lower case
-char *toLowercase(char str[]){
+char *toLowercase(char str[]);//make string to lower case
+int check_str(char *target); //check the format of string1 and string2
 
-	int i;
-	for(i = 0; i < strlen(str); i++){
-		str[i] = tolower(str[i]);
-	}
-	return str;
-}
-
-int check_str(char *target){//valid->0 invalid->1
-
-	int i = 0, is_valid = 1;
-
-	if(target == NULL){
-
-		is_valid = 0;
-
-	}
-	else{
-
-		char str[strlen(target) + 1];
-		strcpy(str, target);
-
-		for(i = 0; i < strlen(str); i++){
-			if(!(isalnum(str[i]) || str[i] == '-')){
-				//the char is not alphabet, number or dash
-				is_valid = 0;
-			}
-		}
-
-	}
-
-	return is_valid;
-	
-}
 
 int main(void){
 	int i, j;// use for loop
-	char inputSTR[STRLEN], article[ARTLEN];//the input string and input article
+	char inputSTR[STRLEN + 1], article[ARTLEN + 1];//the input string and input article
 	char *pattern = NULL, *replacement = NULL; // the pattern and replacement
 	char *parameter = NULL; // the parameter and it's default is NULL
 
 	//init the inputSTR and article
-	for(i = 0; i < STRLEN; i++){
+	for(i = 0; i <= STRLEN; i++){
 		inputSTR[i] = '\0';
 	}
-	for(i = 0; i < ARTLEN; i++){
-		article[ARTLEN] ='\0';
+	for(i = 0; i <= ARTLEN; i++){
+		article[i] ='\0';
 	}
 
 	//read the inputSTR
 	//fprintf(stderr, "Enter pattern, replacement, and at most one parameter:\n");
 	fgets(inputSTR, STRLEN, stdin);
-	inputSTR[STRLEN - 1] = '\0';
+	inputSTR[STRLEN] = '\0';
 
 	/*handle the input string*/
 	
@@ -79,7 +46,7 @@ int main(void){
 		while( fgets(article, ARTLEN, stdin) != NULL ){
 
 			
-			article[ARTLEN - 1] = '\0';//put \0 to the end of the article
+			article[ARTLEN] = '\0';//put \0 to the end of the article
 
 			//count for the size of dilem to split the article
 			int count = 0;
@@ -200,15 +167,51 @@ int main(void){
 			}
 			else{
 				//if invalid input parameter
-				printf("The input format: string1 string2 [parameter]\n");
+				printf("The input format: string1 string2 [parameter]");
 				break;
 			}	
 		}
 	}
 	else{
-		printf("The input format: string1 string2 [parameter]\n");
+		printf("The input format: string1 string2 [parameter]");
 	}
 
 	return 0;
 
+}
+
+char *toLowercase(char str[]){
+
+	int i;
+	for(i = 0; i < strlen(str); i++){
+		str[i] = tolower(str[i]);
+	}
+	return str;
+}
+
+int check_str(char *target){//valid->0 invalid->1
+
+	int i = 0, is_valid = 1;
+
+	if(target == NULL){
+
+		is_valid = 0;
+
+	}
+	else{
+
+		char str[strlen(target) + 1];
+		strcpy(str, target);
+
+		for(i = 0; i < strlen(str); i++){
+			if(!(isalnum(str[i]) || str[i] == '-')){
+				//the char is not alphabet, number or dash
+				is_valid = 0;
+			}
+		}
+
+	}
+
+	return is_valid;
+	
 }
