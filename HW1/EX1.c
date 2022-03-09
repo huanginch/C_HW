@@ -14,7 +14,7 @@ int main(void){
 	int i, j;// use for loop
 	char inputSTR[STRLEN + 1], article[ARTLEN + 1];//the input string and input article
 	char *pattern = NULL, *replacement = NULL; // the pattern and replacement
-	char *parameter = NULL; // the parameter and it's default is NULL
+	char *parameter = NULL, *rest = NULL; // the parameter and it's default is NULL. The string after parameter
 
 	//init the inputSTR and article
 	for(i = 0; i <= STRLEN; i++){
@@ -32,15 +32,16 @@ int main(void){
 	/*handle the input string*/
 	
 	//get the pattern, replacement and parameter
-	const char ds[] = " \n";//the delim for the string
+	const char ds[] = " \n\0";//the delim for the string
 	pattern = strtok(inputSTR, ds);
 	replacement = strtok(NULL, ds);
 	parameter = strtok(NULL, ds);
+	rest = strtok(NULL, ds);
 
 	//printf("pattern: %s\n", pattern);
 	//printf("replacement: %s\n", replacement);
 	
-	if( (check_str(pattern) && check_str(replacement)) ){
+	if( (check_str(pattern) && check_str(replacement) && (rest == NULL)) ){
 
 		//read the article
 		while( fgets(article, ARTLEN, stdin) != NULL ){
