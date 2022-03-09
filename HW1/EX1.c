@@ -6,12 +6,7 @@
 #define STRLEN 100 //the length of input string
 #define ARTLEN 4095 //the length of input article 
 
-/*
-   Upper case to lower case
-	char c = 'A';
-	c = c -'A' + 'a';
-*/
-
+//make string to lower case
 char *toLowercase(char str[]){
 
 	int i;
@@ -21,35 +16,63 @@ char *toLowercase(char str[]){
 	return str;
 }
 
+int check_str(char str[]){
+	//valid->0 invalid->1
+
+	printf("%s\n", str);
+	int i = 0, is_valid = 1;
+	for(i = 0; i < strlen(str); i++){
+		if(!(isalnum(str[i]) || str[i] == '-')){
+			//the char is not alphabet, number or dash
+			is_valid = 0;
+		}
+	}
+
+	return is_valid;
+	
+}
+
 int main(void){
 	int i, j;// use for loop
 	char inputSTR[STRLEN], article[ARTLEN];//the input string and input article
 	char *pattern, *replacement; // the pattern and replacement
-	char *parameter = NULL; // the parameter and it's default is "\0"
+	char *parameter = NULL; // the parameter and it's default is NULL
 
 	//init the inputSTR and article
 	for(i = 0; i < STRLEN; i++){
-		inputSTR[i - 1] = '\0';
+		inputSTR[i] = '\0';
 	}
 	for(i = 0; i < ARTLEN; i++){
-		article[ARTLEN - 1] ='\0';
+		article[ARTLEN] ='\0';
 	}
 
 	//read the inputSTR
-	fprintf(stderr, "Enter pattern, replacement, and at most one parameter:\n");
+	//fprintf(stderr, "Enter pattern, replacement, and at most one parameter:\n");
 	fgets(inputSTR, STRLEN, stdin);
 	inputSTR[STRLEN - 1] = '\0';
 
 	/*handle the input string*/
 	
 	//get the pattern, replacement and parameter
-	const char ds[] = " !?@#$%^&*()_+={}[]\\\n\t\r;:";//the delim for the string
+	const char ds[] = " \n";//the delim for the string
 	pattern = strtok(inputSTR, ds);
 	replacement = strtok(NULL, ds);
 	parameter = strtok(NULL, ds);
 
+
 	//read the article
 	while( fgets(article, ARTLEN, stdin) != NULL ){
+
+		//printf("%d\n", check_str(pattern));
+		//printf("%d\n", check_str(replacement));
+		//printf("%d\n", !(check_str(pattern) && check_str(replacement)));
+
+		//invalid input format of string1 or string2
+		if( !(check_str(pattern) || check_str(replacement)) ){
+			printf("in to the if\n");
+			printf("The input format: string1 string2 [parameter]\n");
+			break;
+		}
 		
 		article[ARTLEN - 1] = '\0';//put \0 to the end of the article
 
@@ -95,13 +118,15 @@ int main(void){
 
 			while(word != NULL){
 				
+				int wordLEN = strlen(word); 
+
 				//put the sliced word into an array
-				char wordarr[strlen(word)];
+				char wordarr[wordLEN + 1];
 				strcpy(wordarr, word);
 
 				//handle the replace
 				if( (body = strstr(wordarr, pattern)) != 0 ){
-					for(i = 0; i < strlen(wordarr); i++){
+					for(i = 0; i < wordLEN; i++){
 						if(&wordarr[i] == body)
 							break;
 					}
@@ -112,20 +137,16 @@ int main(void){
 						printf("%c",wordarr[j]);
 					}
 					printf("%s", replacement);
-					for(j = i+strlen(pattern); j < strlen(wordarr); j++){
+					for(j = i+strlen(pattern); j < wordLEN; j++){
 						//the characters after the pattern in the word
 						printf("%c",wordarr[j]);
 					}
 					printf("\n");
 
-
 				}
+
 				word = strtok(NULL, da);
 			}
-
-					
-
-
 
 		}
 		else if(!(strncmp(parameter, "-i", 3))){
@@ -133,24 +154,25 @@ int main(void){
 			
 			//change pattern to lower case
 			char *lower_pattern = toLowercase(pattern);
-			//printf("lower_pattern: %s\n", lower_pattern);
 
 			word = strtok(article, da);
 
 			while(word != NULL){
+
+				int wordLEN = strlen(word);
 				
 				//put the sliced word into an array and it is the origin version
-				char o_word[strlen(word)];
+				char o_word[wordLEN + 1];
 				strcpy(o_word, word);
 
 				//change the word to lower case and save a lower case array version 
 				toLowercase(word);
-				char lower_word[strlen(word)];
+				char lower_word[wordLEN + 1];
 				strcpy(lower_word, word);
 
 				/*handle the replace*/
 				if( (body = strstr(lower_word, lower_pattern)) != 0 ){
-					for(i = 0; i < strlen(word); i++){
+					for(i = 0; i < wordLEN; i++){
 						if(&lower_word[i] == body)
 							break;
 					}
@@ -160,7 +182,7 @@ int main(void){
 						printf("%c",o_word[j]);
 					}
 					printf("%s", replacement);
-					for(j = i+strlen(lower_pattern); j < strlen(word); j++){
+					for(j = i+strlen(lower_pattern); j < wordLEN; j++){
 						printf("%c",o_word[j]);
 					}
 					printf("\n");
@@ -179,6 +201,7 @@ int main(void){
 		}
 		
 	}
-
+	
+	return 0;
 
 }
