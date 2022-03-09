@@ -59,6 +59,9 @@ int main(void){
 			}
 
 			char tmp_da[count];//the temp delim array for the article
+			for(i = 0; i < count; i++){
+				tmp_da[i] = '\0';
+			}
 			char *word; //the word in the article
 			char *body; // the pattern should be replace
 			
