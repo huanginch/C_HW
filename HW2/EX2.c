@@ -7,9 +7,10 @@
 #define ARTLEN 4095 //the length of input article
 #define DEBUG 1
 #define initArr(arr, arrlen) 			\
-	for(int i = 0; i < arrlen; i++){	\
+	for(int i = 0; i <= arrlen; i = i + 1){	\
 		arr[i] = '\0';					\
 	}
+#define PRINTERR() {printf("The input format: string1 string2 [parameter]\n");}
 
 
 char *toLowercase(char str[]);//make string to lower case
@@ -18,10 +19,10 @@ void PRINTRES(char word[], int repIndex, char *pattern, char *replacement); // p
 void findDelim(char article[], char tmp_da[], int count);//find the delim for the article
 
 int main(void){
-	int i, j;// use for loop
+	int i;// use for loop
 	char inputSTR[STRLEN + 1], article[ARTLEN + 1];//the input string and input article
-	char *pattern = NULL, *replacement = NULL; // the pattern and replacement
-	char *parameter = NULL, *rest = NULL; // the parameter and it's default is NULL. The string after parameter
+	char *pattern = '\0', *replacement = '\0'; // the pattern and replacement
+	char *parameter = '\0', *rest = NULL; // the parameter and it's default is NULL. The string after parameter
 	int caseNum = 0;//save the case numer: 0-> no parameter, 1-> -i, 2->invalid
 
 	//init the inputSTR and article
@@ -35,12 +36,15 @@ int main(void){
 	/*handle the input string*/
 	
 	//get the pattern, replacement and parameter
-	const char ds[] = " \n\0";//the delim for the string
+	const char ds[] = " \n\r\t";//the delim for the string
 	pattern = strtok(inputSTR, ds);
 	replacement = strtok(NULL, ds);
 	parameter = strtok(NULL, ds);
 	rest = strtok(NULL, ds);// the rest input string
-	
+
+	//printf("%d\n", strncmp(parameter, "-i", 3));
+	//printf("%ld\n", strlen(parameter));
+
 	//check the parameter and decided the case number
 	if(parameter == NULL){
 		caseNum = 0;
@@ -52,6 +56,11 @@ int main(void){
 		caseNum = 2;
 	}
 	
+	//printf("%s\n", pattern);
+	//printf("%s\n", replacement);
+	//printf("%s\n", parameter);
+	//printf("%d\n", caseNum);
+
 	if( (check_str(pattern) && check_str(replacement) && (caseNum != 2) && (rest == NULL)) ){
 		
 		#if DEBUG
@@ -74,7 +83,7 @@ int main(void){
 			}
 
 			char tmp_da[count];//the temp delim array for the article
-			initArr(tmp_da, count);
+			initArr(tmp_da, count-1);
 
 			char *word; //the word in the article
 			char *body; // the pattern should be replace
@@ -96,7 +105,7 @@ int main(void){
 				while(word != NULL){
 					
 					#if DEBUG
-						printf("this word is: %s\n", word);
+						printf("the word is: %s\n", word);
 					#endif
 
 					int wordLEN = strlen(word); 
@@ -130,7 +139,7 @@ int main(void){
 				while(word != NULL){
 					
 					#if DEBUG
-						printf("this word is: %s\n", word);
+						printf("the word is: %s\n", word);
 					#endif
 
 					int wordLEN = strlen(word);
@@ -163,7 +172,7 @@ int main(void){
 		}
 	}
 	else{
-		printf("The input format: string1 string2 [parameter]\n");
+		PRINTERR();
 	}
 
 	return 0;
