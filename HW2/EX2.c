@@ -15,6 +15,7 @@
 char *toLowercase(char str[]);//make string to lower case
 int check_str(char *target); //check the format of string1 and string2
 void PRINTRES(char word[], int repIndex, char *pattern, char *replacement); // print the word is replacemented
+void findDelim(char article[], char tmp_da[], int count);//find the delim for the article
 
 int main(void){
 	int i, j;// use for loop
@@ -79,20 +80,7 @@ int main(void){
 			char *body; // the pattern should be replace
 			
 			//find the char which is not alphabet, number and dash. And then put them into tmp_da
-			for(i = 0; i < ARTLEN; i++){
-				if(!(isalnum(article[i]) || article[i] == '-')){
-					for(j = 0; j < count; j++){
-						if(tmp_da[j] ==  article[i]){ //if the char is already put in the tmp_da, skip it.
-							break;
-						}
-						if(j == strlen(tmp_da)){ 
-							//if all the elements of tmp_da is not as same as the char, put it into tmp_da
-							tmp_da[j] = article[i];
-							break;
-						}
-					}
-				}
-			}
+			findDelim(article, tmp_da, count);
 
 			//strtok ask for const char
 			const char *da;
@@ -171,12 +159,7 @@ int main(void){
 					word = strtok(NULL, da);
 				}
 
-			}
-			//else{
-				//if invalid input parameter
-				//printf("The input format: string1 string2 [parameter]\n");
-				//break;
-			//}	
+			}	
 		}
 	}
 	else{
@@ -239,4 +222,24 @@ void PRINTRES(char word[], int repIndex, char *pattern, char *replacement){
 	}
 
 	printf("\n");
+}
+
+void findDelim(char article[], char tmp_da[], int count){
+	
+	int i, j;
+
+	for(i = 0; i < ARTLEN; i++){
+		if(!(isalnum(article[i]) || article[i] == '-')){
+			for(j = 0; j < count; j++){
+				if(tmp_da[j] ==  article[i]){ //if the char is already put in the tmp_da, skip it.
+					break;
+				}
+				if(j == strlen(tmp_da)){ 
+					//if all the elements of tmp_da is not as same as the char, put it into tmp_da
+					tmp_da[j] = article[i];
+					break;
+				}
+			}
+		}
+	}
 }
