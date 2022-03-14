@@ -7,16 +7,28 @@
 #define ARTLEN 4095 //the length of input article
 #define DEBUG 1
 #define initArr(arr, arrlen) 			\
-	for(int i = 0; i <= arrlen; i = i + 1){	\
+	for(int i = 0; i <= arrlen; i++){	\
 		arr[i] = '\0';					\
 	}
-#define PRINTERR() {printf("The input format: string1 string2 [parameter]\n");}
-
+#define validCase(caseNum) (caseNum != 2)
+#define check_para(parameter, caseNum) \
+	if(parameter == NULL){	\
+		caseNum = 0;	\
+	}	\
+	else if(!(strncmp(parameter, "-i", 3))){	\
+		caseNum = 1;	\
+	}	\
+	else{	\
+		caseNum = 2;	\
+	}
 
 char *toLowercase(char str[]);//make string to lower case
 int check_str(char *target); //check the format of string1 and string2
 void PRINTRES(char word[], int repIndex, char *pattern, char *replacement); // print the word is replacemented
+int countDelim(char article[]); //count the time that the special character appear
 void findDelim(char article[], char tmp_da[], int count);//find the delim for the article
+void handleCase0(char article[], const char *da, char *pattern, char *replacement); // handle case 0
+void handleCase1(char article[], const char *da, char *pattern, char *replacement); // handle case 1
 
 int main(void){
 	int i;// use for loop
@@ -42,26 +54,10 @@ int main(void){
 	parameter = strtok(NULL, ds);
 	rest = strtok(NULL, ds);// the rest input string
 
-	//printf("%d\n", strncmp(parameter, "-i", 3));
-	//printf("%ld\n", strlen(parameter));
-
 	//check the parameter and decided the case number
-	if(parameter == NULL){
-		caseNum = 0;
-	}
-	else if(!(strncmp(parameter, "-i", 3))){
-		caseNum = 1;
-	}
-	else{
-		caseNum = 2;
-	}
-	
-	//printf("%s\n", pattern);
-	//printf("%s\n", replacement);
-	//printf("%s\n", parameter);
-	//printf("%d\n", caseNum);
+	check_para(parameter, caseNum);
 
-	if( (check_str(pattern) && check_str(replacement) && (caseNum != 2) && (rest == NULL)) ){
+	if( (check_str(pattern) && check_str(replacement) && validCase(caseNum) && (rest == NULL)) ){
 		
 		#if DEBUG
 			printf("this is case %d\n", caseNum);
@@ -70,24 +66,14 @@ int main(void){
 		//read the article
 		while( fgets(article, ARTLEN, stdin) != NULL ){
 
-			
 			article[ARTLEN] = '\0';//put \0 to the end of the article
 
 			//count for the size of dilem to split the article
-			int count = 0;
-			
-			for(i = 0; i < ARTLEN; i++){
-				if(!(isalnum(article[i]) || article[i] == '-')){
-					count++;
-				}
-			}
+			int count = countDelim(article);
 
 			char tmp_da[count];//the temp delim array for the article
 			initArr(tmp_da, count-1);
 
-			char *word; //the word in the article
-			char *body; // the pattern should be replace
-			
 			//find the char which is not alphabet, number and dash. And then put them into tmp_da
 			findDelim(article, tmp_da, count);
 
@@ -98,81 +84,22 @@ int main(void){
 			/*handle the article*/
 			if(caseNum == 0){
 				//if no input parameter
-
-				//slice the article
-				word = strtok(article, da);
-
-				while(word != NULL){
-					
-					#if DEBUG
-						printf("the word is: %s\n", word);
-					#endif
-
-					int wordLEN = strlen(word); 
-
-					//put the sliced word into an array
-					char wordarr[wordLEN + 1];
-					strcpy(wordarr, word);
-
-					//handle the replace
-					if( (body = strstr(wordarr, pattern)) != 0 ){
-						for(i = 0; i < wordLEN; i++){
-							if(&wordarr[i] == body)
-								break;
-						}
-
-						//print the word should be replaced
-						PRINTRES(word, i, pattern, replacement);
-					}
-					word = strtok(NULL, da);
-				}
+				
+				handleCase0(article, da, pattern, replacement);
+				
 
 			}
 			else if(caseNum == 1){
 				//if the parameter is -i
 				
-				//change pattern to lower case
-				char *lower_pattern = toLowercase(pattern);
-
-				word = strtok(article, da);
-
-				while(word != NULL){
-					
-					#if DEBUG
-						printf("the word is: %s\n", word);
-					#endif
-
-					int wordLEN = strlen(word);
-					
-					//put the sliced word into an array and it is the origin version
-					char o_word[wordLEN + 1];
-					strcpy(o_word, word);
-
-					//change the word to lower case and save a lower case array version 
-					toLowercase(word);
-					char lower_word[wordLEN + 1];
-					strcpy(lower_word, word);
-
-					/*handle the replace*/
-					if( (body = strstr(lower_word, lower_pattern)) != 0 ){
-						for(i = 0; i < wordLEN; i++){
-							if(&lower_word[i] == body)
-								break;
-						}
-
-						//print the word after replaced(origin version)
-						PRINTRES(o_word, i, pattern, replacement);
-
-
-					}
-					word = strtok(NULL, da);
-				}
+				handleCase1(article, da, pattern ,replacement);
 
 			}	
 		}
 	}
 	else{
-		PRINTERR();
+		
+		printf("The input format: string1 string2 [parameter]\n");
 	}
 
 	return 0;
@@ -250,5 +177,87 @@ void findDelim(char article[], char tmp_da[], int count){
 				}
 			}
 		}
+	}
+}
+
+int countDelim(char article[]){
+	int i, count = 0;
+	for(i = 0; i < ARTLEN; i++){
+		if(!(isalnum(article[i]) || article[i] == '-')){
+			count++;
+		}
+	}
+
+	return count;
+}
+
+void handleCase0(char article[], const char *da, char *pattern, char *replacement){
+	//slice the article
+	char *word = strtok(article, da);//the word in the article
+	char *body; // the pattern should be replace
+	int i;
+
+	while(word != NULL){
+					
+		#if DEBUG
+			printf("the word is: %s\n", word);
+		#endif
+
+		int wordLEN = strlen(word); 
+
+		//put the sliced word into an array
+		char wordarr[wordLEN + 1];
+		strcpy(wordarr, word);
+
+		//handle the replace
+		if( (body = strstr(wordarr, pattern)) != 0 ){
+			for(i = 0; i < wordLEN; i++){
+				if(&wordarr[i] == body)
+					break;
+			}
+
+			//print the word should be replaced
+			PRINTRES(word, i, pattern, replacement);
+		}
+		word = strtok(NULL, da);
+	}
+}
+
+void handleCase1(char article[], const char *da, char *pattern, char *replacement){
+	
+	char *lower_pattern = toLowercase(pattern); //change pattern to lower case
+	char *word = strtok(article, da); //the word in the article
+	char *body; //the pattern should be replace
+	int i;
+
+	while(word != NULL){
+					
+		#if DEBUG
+			printf("the word is: %s\n", word);
+		#endif
+
+		int wordLEN = strlen(word);
+					
+		//put the sliced word into an array and it is the origin version
+		char o_word[wordLEN + 1];
+		strcpy(o_word, word);
+
+		//change the word to lower case and save a lower case array version 
+		toLowercase(word);
+		char lower_word[wordLEN + 1];
+		strcpy(lower_word, word);
+
+		/*handle the replace*/
+		if( (body = strstr(lower_word, lower_pattern)) != 0 ){
+			for(i = 0; i < wordLEN; i++){
+				if(&lower_word[i] == body)
+					break;
+			}
+
+			//print the word after replaced(origin version)
+			PRINTRES(o_word, i, pattern, replacement);
+
+		}
+		word = strtok(NULL, da);
 	}
 }
