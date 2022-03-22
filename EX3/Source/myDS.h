@@ -1,8 +1,5 @@
 #ifndef MYDS_H
 #define MYDS_H
-#include "basic.h"
-#include "myAlgo.h"
-#include "myDS.h"
 #define MAX_stack MAX_person
 #define MAX_queue (MAX_person * MAX_person)
 

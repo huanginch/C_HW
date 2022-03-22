@@ -1,7 +1,5 @@
 #ifndef MYALGO_H
 #define MYALGO_H
-#include "basic.h"
-#include "myDS.h"
 #define MAX_algorithm 2
 
 extern char algo_name[MAX_algorithm][10];

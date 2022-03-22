@@ -1,8 +1,7 @@
 #ifndef MYIO_H
 #define MYIO_H
-#include "basic.h"
-#include "myDS.h"
-#include "myAlgo.h"
+
+#define _print(algoName) printf("%s: ", #algoName); _print_relation();
 
 /***************************************
  * _build_map: build relation map	   *

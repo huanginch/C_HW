@@ -2,8 +2,6 @@
 #include "myIO.h"
 #include "myAlgo.h"
 
-#define _print(NAME) printf("NAME: "); _print_relation();
-
 int main(int argc, char **argv){
 	int person1, person2;
 	_check_argument(argc, argv);
