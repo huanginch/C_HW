@@ -4,7 +4,6 @@
 
 extern char algo_name[MAX_algorithm][10];
 extern int relation_map[MAX_person][MAX_person];
-extern int visited[MAX_person];
 
 /************************************
  * _map_init: init the relatopn map  *

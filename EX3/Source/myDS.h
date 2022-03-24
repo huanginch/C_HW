@@ -1,13 +1,5 @@
 #ifndef MYDS_H
 #define MYDS_H
-#define MAX_stack MAX_person
-#define MAX_queue (MAX_person * MAX_person)
-
-//stack
-extern int stack_array[MAX_stack];
-
-//circular queue
-extern int queue_array[MAX_queue];
 
 /*************************************
  * _stack_push: add element to stack *
