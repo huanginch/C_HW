@@ -3,7 +3,7 @@
 > This repo is homework exercise of Program Design class.
 > Each folder has one PDF to describe its own question 
 
-### **HW4:**
+### **HW1:**
 <p> A practice for string</p>
 
 ### **HW2:**
