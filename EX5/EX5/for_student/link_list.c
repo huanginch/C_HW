@@ -11,6 +11,7 @@ void my_insert(struct node* HEAD, int ID, char *Name, int node_id){
 	
 	while(current != NULL){
 		if(current->id == ID){
+			//ID found, create new node
 			struct node *new_node = malloc(sizeof(struct node));
 			strcpy(new_node->name, Name);
 			new_node->id = node_id;
@@ -20,6 +21,7 @@ void my_insert(struct node* HEAD, int ID, char *Name, int node_id){
 		}
 		
 		if(current->next == NULL){
+			//ID doesn't exist
 			printf("INVALID OPERATION\n");
 			return;
 		}
@@ -36,11 +38,13 @@ void my_delete(struct node* HEAD, char *Name){
 
 	while(current != NULL){
 		if(!strcmp(current->name, Name)){
+			//name found, delete node
 			prev->next = current->next;
 			break;
 		}
 
 		if(current->next == NULL){
+			//name doesn't exist
 			printf("INVALID OPERATION\n");
 			return;
 		}
@@ -64,11 +68,13 @@ void my_swap(struct node *HEAD, char *Name1, char *Name2){
 
 	while(current != NULL){
 		if(!strcmp(current->name, Name1)){
+			//find node1 and the node1's previous node
 			node1 = current;
 			prev1 = prev;
 		}
 
 		if(!strcmp(current->name, Name2)){
+			//find node2 and the node2's previous node
 			node2 = current;
 			prev2 = prev;
 		}
@@ -78,13 +84,16 @@ void my_swap(struct node *HEAD, char *Name1, char *Name2){
 	}
 
 	if(node1 == NULL || node2 == NULL){
+		//can't found node1 and node2
 		printf("INVALID OPERATION\n");
 		return;
 	}
 	
+	//swap the previous nodes
 	prev1->next = node2;
 	prev2->next = node1;
-
+	
+	//swap node1 and node2
 	struct node *temp_node = node2->next;
 	node2->next = node1->next;
 	node1->next = temp_node;
@@ -98,11 +107,13 @@ void my_print_id(struct node *HEAD, char *Name){
 
 	while(current != NULL){
 		if(!strcmp(current->name, Name)){
+			//name found
 			printf("%d\n", current->id);
 			break;
 		}
 
 		if(current->next == NULL){
+			//can't found
 			printf("INVALID OPERATION\n");
 			return;
 		}
@@ -117,12 +128,14 @@ void my_print_name(struct node *HEAD, int ID){
 	struct node *current = HEAD;
 
 	while(current != NULL){
+		//ID found
 		if(current->id == ID){
 			printf("%s\n", current->name);
 			break;
 		}
 
 		if(current->next == NULL){
+			//can't found
 			printf("INVALID OPERATION\n");
 			return;
 		}
@@ -137,7 +150,8 @@ void my_result(struct node* HEAD){
 	struct node *current = HEAD;
 	
 	while(current != NULL){
-		
+
+		//travere all node
 		printf("%d %s\n", current->id, current->name);
 
 		current = current->next;
