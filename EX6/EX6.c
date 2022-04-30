@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define NAME_LENGTH 1000
+#define NAME_LENGTH 100
 
 //circular linked list
 struct circle{
@@ -19,6 +19,7 @@ int main(void){
 	
 	struct circle *head = NULL;
 	create_list(&head);
+
 	kill(&head);
 
 	return 0;
@@ -33,25 +34,24 @@ void create_list(struct circle **first){
 
 	//create the linked list
 	for(i = 0; i < n; i++){
-		char name[NAME_LENGTH + 1];//name of the course
+		char input_name[NAME_LENGTH + 1];//name of the course
 
-		scanf("%s", name);
-		add_person(first, &end, name);
+		scanf("%s", input_name);
+		add_person(first, &end, input_name);
 	}
 	
 	//circle the list
 	(*first)->prior = end;
 	end->next = *first;
+	return;
 }
 
 void add_person(struct circle **first, struct circle **End, char name[]){
-
 	//create new course node
 	struct circle *new_person = malloc(sizeof(struct circle));
 	strncpy(new_person->name, name, strlen(name));
 	new_person->next = NULL;
 	new_person->prior = NULL;
-
 
 	if(*first == NULL){// if there is no node in the list
 		*first = new_person;
@@ -67,16 +67,18 @@ void add_person(struct circle **first, struct circle **End, char name[]){
 
 void kill(struct circle **first){
 	int k; //steps
-	char *direction;
+	int max_d_size = 16; //max direction size is counterclockwise
+	char *direction = malloc(max_d_size + 1);
 	int i;
-
+	
 	fflush(stdin);
-	scanf("%d %s", &k, direction);
+	scanf("%d %s\n", &k, direction);
 
 	struct circle *current = *first;//the current person
 	struct circle *prev = NULL;//the previous person
 	
 	while(current->next != current){
+
 		if(!strcmp(direction, "CLOCKWISE")){
 
 			//kill from clockwise
@@ -108,9 +110,11 @@ void kill(struct circle **first){
 		}
 		else{
 			printf("wrong direction\n");
+			break;
 		}
 	}
 
+	free(direction);
 	printf("%s SURVIVE\n", current->name);
 
 }
