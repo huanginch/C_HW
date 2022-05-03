@@ -88,7 +88,8 @@ void kill(struct circle **first){
 				prev = current;
 				current = current->next;
 			}
-
+			
+			//kill the person
 			prev->next = current->next;
 			printf("%s KILLED\n", current->name);
 			free(current);
@@ -96,12 +97,16 @@ void kill(struct circle **first){
 			current->prior = prev;
 		}
 		else if(!strcmp(direction, "COUNTERCLOCKWISE")){
+			
+			//kill from counter clockwise
 
 			for(i = 0; i < k; i++){
+				//find the kill target
 				prev = current;
 				current = current->prior;
 			}
-
+			
+			//kill the person
 			prev->prior = current->prior;
 			printf("%s KILLED\n", current->name);
 			free(current);
