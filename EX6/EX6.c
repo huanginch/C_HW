@@ -11,25 +11,24 @@ struct circle{
 	struct circle *prior;
 };
 
-void create_list(struct circle **first); //create the circular linked list
+void create_list(struct circle **first, int n); //create the circular linked list
 void add_person(struct circle **first, struct circle **End, char name[]);//add people to the circular linked list
-void kill(struct circle **first); //kill people
+void kill(struct circle **first, int n); //kill people
 
 int main(void){
-	
-	struct circle *head = NULL;
-	create_list(&head);
 
-	kill(&head);
+	int n = 0; //the number of the courses
+	scanf("%d", &n);
+	struct circle *head = NULL;
+	create_list(&head, n);
+
+	kill(&head, n);
 
 	return 0;
 }
 
-void create_list(struct circle **first){
+void create_list(struct circle **first, int n){
 	int i = 0;//use for the loop
-	int n = 0; //the number of the courses
-	scanf("%d\n", &n);
-	
 	struct circle *end;
 
 	//create the linked list
@@ -65,25 +64,25 @@ void add_person(struct circle **first, struct circle **End, char name[]){
 	}
 }
 
-void kill(struct circle **first){
+void kill(struct circle **first, int n){
 	int k; //steps
 	int max_d_size = 16; //max direction size is counterclockwise
 	char *direction = malloc(max_d_size + 1);
 	int i;
 	
 	fflush(stdin);
-	scanf("%d %s\n", &k, direction);
+	scanf("%d %s", &k, direction);
 
 	struct circle *current = *first;//the current person
 	struct circle *prev = NULL;//the previous person
-	
+	k = k % n;
 	while(current->next != current){
 
 		if(!strcmp(direction, "CLOCKWISE")){
 
 			//kill from clockwise
 
-			for(i = 0; i < k; i++){
+			for(i = 0; i < k - 1; i++){
 				//find the kill target
 				prev = current;
 				current = current->next;
