@@ -11,10 +11,18 @@ void add_record(struct student **first, int id, int score); //add student record
 void print_record(struct student **first); //print the record
 void clean(struct student **first); //free the memory
 
-//quick sort
-void _sort(struct student *head, struct student *tail); //sort by the student id in ascending order
+/*
+quick sort:
+select a node as pivot
+if the node ID is smaller than pivot，move to the right of pivot
+else move to the left of pivot
+use the nodes at right of pivot as new list and sort again
+use the nodes at left of pivot as new list and sort again
+sort until the origin list is sorted
+*/
+struct student *_sort(struct student *head, struct student *tail); //sort by the student id in ascending order
 struct student *find_tail(struct student *head);//find the last node
-struct student *partition(struct student *head, struct student *tail);//find the pivot
+struct student *partition(struct student *head, struct student *tail, struct student **new_head, struct student **new_tail);//find the new pivot
 
 int main(void){
     int n = 0;//the number of students
@@ -25,10 +33,9 @@ int main(void){
     for(i = 0; i < n; i++){
         scanf("%d %d", &id, &score);
         add_record(&head, id, score);
-        printf("add end\n");
     }
 
-    _sort(head, find_tail(head));
+   head = _sort(head, find_tail(head));
 
     print_record(&head);
 
@@ -81,23 +88,37 @@ void clean(struct student **first){
     }
 }
 
-void _sort(struct student *head, struct student *tail){
+struct student *_sort(struct student *head, struct student *tail){
     
     if(head == tail){
         //nothing to sort
-        return;
+        return head;
     }
 
-    //struct student *new_head = NULL, *new_tail = NULL;
-    struct student *pivot = partition(head, tail);
-    if(pivot != head && pivot != NULL){//pivot is not the first node
+    struct student *new_head = NULL, *new_tail = NULL;
+    struct student *pivot = partition(head, tail, &new_head, &new_tail);
+    if(pivot != new_head){//pivot is not the first node
         //sort the left list
-        _sort(head, pivot);
+        struct student *temp = new_head;
+        //let the last node of left list point to NULL
+        while (temp->next != pivot)
+            temp = temp->next;
+        temp->next = NULL;
+
+        new_head = _sort(new_head, temp);
+
+        //link the sorted list to the origin list
+        temp = find_tail(new_head);
+        temp->next = pivot;
+
     }
-    if(pivot != tail && pivot != NULL){//pivot is not the last node
-         //sort right list
-        _sort(pivot->next, tail);
+    if(pivot != new_tail){//pivot is not the last node
+        //sort right list
+        pivot->next =  _sort(pivot->next, new_tail);
+
     }
+
+    return new_head;
 }
 
 struct student *find_tail(struct student *head){
@@ -110,21 +131,32 @@ struct student *find_tail(struct student *head){
     return current;
 }
 
-struct student *partition(struct student *head, struct student *tail){
+struct student *partition(struct student *head, struct student *tail, struct student **new_head, struct student **new_tail){
     struct student *pivot = head;//set the first node as pivot
-    struct student *current = tail;
+    struct student *current = head;
     struct student *prev = NULL;
-    struct student *temp = NULL;
 
-    while(current != NULL && current != tail){
+    while(current != NULL){
 
-        if(current->ID < tail->ID){
-            pivot = head;
-
-            //swap the node
-            temp = current;
-
+        if(current->ID < pivot->ID){
+            //move the node to the left of pivot
+            prev->next = current->next;
+            current->next = head;
+            head = current;
+            current = prev;
         }
+        else{
+            //move tail，the node should be at the right of pivot
+            tail = current;
+        }
+
+        
+        prev = current;
+        current = current->next;
     }
 
+    (*new_head) = head;
+    (*new_tail) = tail;
+
+    return pivot;
 }
