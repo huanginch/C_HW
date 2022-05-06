@@ -35,7 +35,7 @@ int main(void){
         add_record(&head, id, score);
     }
 
-   head = _sort(head, find_tail(head));
+    head = _sort(head, find_tail(head));
 
     print_record(&head);
 
@@ -81,11 +81,13 @@ void clean(struct student **first){
     struct student *current = *first;
     struct student *next = current->next;
 
-    while (current != NULL){//traverse the lsit
+    while (current->next != NULL){//traverse the lsit
         free(current);
         current = next;
         next = current->next;
     }
+
+	free(current);//free the last node
 }
 
 struct student *_sort(struct student *head, struct student *tail){
