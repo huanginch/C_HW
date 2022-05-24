@@ -70,6 +70,7 @@ int find(struct tNode *curNode, int target){
 			sum += Lchild->data;
 		}
 
+		//add right data
 		if(Rchild == NULL){
 			sum += 0;
 		}
