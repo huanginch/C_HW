@@ -25,16 +25,6 @@ int main(void){
     int user_status = 0;
     while(scanf("%d",&user_id) != EOF){
         add_login(user_id, status, status_len);
-        user_status = check_status(user_id, status);
-
-        if(user_status == 0){
-            // do not pass
-            printf("GOOD BYE\n");
-        }
-        else{
-            // pass
-            printf("PASS\n");
-        }
     }
 }
 
@@ -48,40 +38,44 @@ void initArr(unsigned char status[], int status_len){
 void add_login(int user_id, unsigned char status[], int status_len){
     if(check_status(user_id, status) == 0){
         //do not pass
+        printf("GOOD BYE\n");
         return;
     }
 
-    int index = (user_id - 1) / 4; //index of user_id in status
-    int pos = (user_id - 1) % 4; // position of user_id in status[index];
+    //pass and add
+    int index = user_id / 4; //index of user_id in status
+    int pos = user_id % 4; // position of user_id in status[index];
     int carry = 0;//the carry bit when add one
     if(pos == 0){
         //at position 0
         carry = ( status[index] & 1 ) << 1;
-        status[index] = status[index] | 1;
+        status[index] = status[index] ^ 1;
     }
     else if(pos == 1){
         //at position 1
         carry = ( status[index] & 4 ) << 1;
-        status[index] = status[index] | 4;
+        status[index] = status[index] ^ 4;
     }
-    else if (pos == 2){
+    else if(pos == 2){
         //at position 2
         carry = ( status[index] & 16 ) << 1;
-        status[index] = status[index] | 16;
+        status[index] = status[index] ^ 16;
     }
     else if(pos == 3){
         //at position 3
         carry = ( status[index] & 64 ) << 1;
-        status[index] = status[index] | 64;
+        status[index] = status[index] ^ 64;
     }
-
-    status[index] = status[index] | carry;
+    
+    status[index] = status[index] ^ carry; //add carry
+    // printf("carry: %d, status[index]: %d\n", carry, status[index]);
+    printf("PASS\n");
     
 }
 
 int check_status(int user_id, unsigned char status[]){
-    int index = (user_id - 1) / 4;
-    int pos = (user_id - 1) % 4;
+    int index = user_id / 4;
+    int pos = user_id % 4;
     unsigned char check_bit = 0;
 
     if(pos == 0){//at position 0
@@ -97,10 +91,15 @@ int check_status(int user_id, unsigned char status[]){
         check_bit = 192;
     }
 
-    if((status[index] & check_bit) == check_bit){
+    // printf("--------------\n");
+    // printf("check res: %d\n", status[index] & check_bit);
+
+    if((status[index] & check_bit) != check_bit){
+        //pass
         return 1;
     }
     else{
+        //fail
         return 0;
     }
 }
